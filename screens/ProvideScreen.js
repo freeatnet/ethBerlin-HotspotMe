@@ -17,7 +17,6 @@ export default class HomeScreen extends React.Component {
     hotspot: true,
     channel: null,
     network: "",
-    switchValue: false
   };
 
   toggleHotspot = () => {
@@ -28,29 +27,14 @@ export default class HomeScreen extends React.Component {
     }
   };
 
-  handlerSwitchHotspot = () => {
-    // TODO: do some!
-  }
-
   onPressDisconnectUser = () => {
     // TODO: do something!
   }
 
-  handlerSwitchHotspot = (value) => {
-    this.setState({ switchValue: value })
-    // TODO: do some.
-  }
-
   render() {
-
     return (
       <View style={styles.container}>
         <View style={styles.mainContainer}>
-          <Switch
-            onValueChange={this.handlerSwitchHotspot}
-            style={styles.hotspotSwitch}
-            value={this.state.switchValue}
-          />
           <Image
             source={require('../assets/images/robot-dev.png')}
             style={styles.userImage}
