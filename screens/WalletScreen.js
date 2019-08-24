@@ -62,8 +62,24 @@ export default class WalletScreen extends Component {
   };
 
   componentDidMount() {
-    this.refreshBalance();
     this.setupChannel();
+    this.refreshBalance();
+  }
+
+  setupChannel = async () => {
+    let { channel, token } = this.state;
+    if (!channel) {
+      channel = await getChannel();
+    }
+    this.setState({
+      address: channel.wallet.address,
+      channel,
+      network: getNetwork(channel.opts.ethChainId),
+    });
+    if (!token) {
+      token = await getToken();
+    }
+    this.setState({ token });
   }
 
   refreshBalance = async () => {
@@ -73,23 +89,6 @@ export default class WalletScreen extends Component {
     const swapRate = await getSwapRate();
     console.log(`Got updated swapRate`)
     this.setState({ balance, swapRate })
-  }
-
-  setupChannel = async () => {
-    let { channel, token } = this.state;
-    if (!channel) {
-      channel = await getChannel();
-    }
-    if (!token) {
-      token = await getToken();
-    }
-
-    this.setState({
-      address: channel.wallet.address,
-      channel,
-      network: getNetwork(channel.opts.ethChainId),
-      token,
-    });
   }
 
   render() {
@@ -152,10 +151,8 @@ export default class WalletScreen extends Component {
 
           <View style={styles.helpContainer}>
             <TouchableOpacity
-              onPress={async () => {
-                await depositAndSwap(balance, channel, swapRate, token)
-                await this.refreshBalance()
-              }}
+              onPress={() =>
+                depositAndSwap(balance, channel, swapRate, token, this.setState.bind(this))}
               style={styles.helpLink}>
               <Text style={styles.helpLinkText}>
                 Deposit{'\n'}
