@@ -2,8 +2,7 @@ import * as WebBrowser from "expo-web-browser";
 import React from "react";
 import {
   Image,
-  Platform,
-  ScrollView,
+  Switch,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -18,7 +17,8 @@ export default class HomeScreen extends React.Component {
     address: "",
     hotspot: true,
     channel: null,
-    network: ""
+    network: "",
+    switchValue: false
   };
 
   toggleHotspot = () => {
@@ -28,11 +28,49 @@ export default class HomeScreen extends React.Component {
       this.setState({ hotspot: true });
     }
   };
+
+  handlerSwitchHotspot = () => {
+    // TODO: do some!
+  }
+
+  onPressDisconnectUser = () => {
+    // TODO: do something!
+  }
+
+  handlerSwitchHotspot = (value) => {
+    this.setState({ switchValue: value })
+    // TODO: do some.
+  }
   
   render() {
 
     return (
       <View style={styles.container}>
+        <View style={styles.mainContainer}>
+          <Switch
+            onValueChange={this.handlerSwitchHotspot}
+            style={styles.hotspotSwitch}
+            value={this.state.switchValue}
+          />
+          <Image
+            source={require('../assets/images/robot-dev.png')}
+            style={styles.userImage}
+          />
+          <View style={styles.getStartedContainer}>
+            <Text style={styles.getStartedText}>
+              So far, this user has consumed:
+            </Text>
+            <Text style={styles.consumedText}>
+              78436 kb
+            </Text>
+          </View>
+          <Button
+            onPress={this.onPressDisconnectUser}
+            title="Disconnect User"
+            color="#841584"
+            accessibilityLabel="Button to disconnect a user"
+          />
+        </View>
         <ScrollView
           style={styles.container}
           contentContainerStyle={styles.contentContainer}
@@ -136,6 +174,9 @@ function handleHelpPress() {
 }
 
 const styles = StyleSheet.create({
+  hotspotSwitch: {
+    marginTop: 20,
+  },
   container: {
     flex: 1,
     backgroundColor: "#fff"
@@ -155,7 +196,7 @@ const styles = StyleSheet.create({
     marginTop: 10,
     marginBottom: 20
   },
-  welcomeImage: {
+  userImage: {
     width: 100,
     height: 80,
     resizeMode: "contain",
@@ -221,5 +262,11 @@ const styles = StyleSheet.create({
   helpLinkText: {
     fontSize: 14,
     color: "#2e78b7"
-  }
+  },
+  consumedText: {
+    fontSize: 24,
+    color: 'rgba(96,100,109, 1)',
+    lineHeight: 32,
+    textAlign: 'center',
+  },
 });
