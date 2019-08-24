@@ -9,7 +9,7 @@ import ConnectingStatus from '../components/ConnetingStatus';
 
 
 export default class ConnectScreen extends React.Component {
-  state = { wifiList: [] };
+  state = { wifiList: [], connectingToSsid: '' };
 
   componentDidMount = () => {
     this.loadAvailableWifiList();
@@ -26,7 +26,12 @@ export default class ConnectScreen extends React.Component {
     });
   }
 
+  handleButtonCall = (newSsid) => {
+    this.setState({ connectingToSsid: newSsid });
+  }
+
   render = () => {
+    const { connectingToSsid } = this.state;
     return (
       <View style={styles.container}>
         <Text style={styles.titleText}>
@@ -35,7 +40,7 @@ export default class ConnectScreen extends React.Component {
         <View style={styles.container}>
           <FlatList
             data={this.state.wifiList}
-            renderItem={({ item }) => <ConnectingStatus item={item} />}
+            renderItem={({ item }) => <ConnectingStatus item={item} reset={item.ssid !== connectingToSsid} handleButtonCall={this.handleButtonCall} />}
           />
         </View>
       </View>
