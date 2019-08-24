@@ -14,7 +14,10 @@
   "dependencies": {
     "@expo/samples": "~3.0.3",
     "@expo/vector-icons": "^10.0.3",
+    "@react-native-community/async-storage": "^1.6.1",
     "@react-navigation/web": "^1.0.0-alpha.9",
+    "connext": "4.2.1",
+    "ethers": "^4.0.36",
     "expo": "^34.0.1",
     "expo-asset": "^6.0.0",
     "expo-constants": "6.0.0",
