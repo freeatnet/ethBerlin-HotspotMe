@@ -1,11 +1,12 @@
-node_modules/**/*
-.expo/*
-npm-debug.*
 *.jks
-*.p8
-*.p12
 *.key
 *.mobileprovision
 *.orig.*
+*.p12
+*.p8
+*.sw[op]
+.expo/*
+node_modules/**/*
+npm-debug.*
 web-build/
 web-report/
