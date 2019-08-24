@@ -105,7 +105,7 @@ export default class WalletScreen extends Component {
 
           <View style={styles.getStartedContainer}>
             <Text style={styles.getStartedText}>
-              Deposit address:
+              Send funds to this address to deposit:
             </Text>
           </View>
 
