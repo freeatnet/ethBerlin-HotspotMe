@@ -1194,7 +1194,7 @@
   dependencies:
     "@types/yargs-parser" "*"
 
-"@unimodules/core@~3.0.0":
+"@unimodules/core@~3.0.0", "@unimodules/core@~3.0.2":
   version "3.0.2"
   resolved "https://registry.yarnpkg.com/@unimodules/core/-/core-3.0.2.tgz#a2b143fb1e743809ba17c60ae1848f82b8637901"
   integrity sha512-EMZjVp+yrtoPKpDBPvj4+hyDWALl7gvpWeUsDz2Nb9MMBPLnhag1uNk3KC98StJdnjbSXKSdKrCMMidOXnyKcg==
@@ -2532,7 +2532,7 @@ expo-constants@6.0.0, expo-constants@~6.0.0:
   dependencies:
     ua-parser-js "^0.7.19"
 
-expo-file-system@~6.0.0:
+expo-file-system@~6.0.0, expo-file-system@~6.0.1:
   version "6.0.2"
   resolved "https://registry.yarnpkg.com/expo-file-system/-/expo-file-system-6.0.2.tgz#e65f30eb6a7213e07933df9688116eaf4e25bbf8"
   integrity sha512-s+6oQpLhcT7MQp7fcoj1E+zttMr0WX6c0FrddzqB4dUfhIggV+nb35nQMASIiTHAj8VPUanTFliY5rETHRMHRA==
@@ -5529,6 +5529,11 @@ react-native-platform-touchable@^1.1.1:
   resolved "https://registry.yarnpkg.com/react-native-platform-touchable/-/react-native-platform-touchable-1.1.1.tgz#fde4acc65eea585d28b164d0c3716a42129a68e4"
   integrity sha1-/eSsxl7qWF0osWTQw3FqQhKaaOQ=
 
+react-native-reanimated@~1.1.0:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/react-native-reanimated/-/react-native-reanimated-1.1.0.tgz#ba6864055ec3a206cdd5209a293fe653ce276206"
+  integrity sha512-UGDVNfvuIkMqYUx6aytSzihuzv6sWubn0MQi8dRcw7BjgezhjJnVnJ/NSOcpL3cO+Ld7lFcRX6GKcskwkHdPkw==
+
 react-native-safe-area-view@^0.14.1:
   version "0.14.7"
   resolved "https://registry.yarnpkg.com/react-native-safe-area-view/-/react-native-safe-area-view-0.14.7.tgz#e1dd1c4d25a90677df2c15347fdddb2306ba5971"
@@ -5549,6 +5554,30 @@ react-native-tab-view@^1.2.0, react-native-tab-view@^1.4.1:
   integrity sha512-Bke8KkDcDhvB/z0AS7MnQKMD2p6Kwfc1rSKlMOvg9CC5CnClQ2QEnhPSbwegKDYhUkBI92iH/BYy7hNSm5kbUQ==
   dependencies:
     prop-types "^15.6.1"
+
+react-native-unimodules@~0.5.2:
+  version "0.5.4"
+  resolved "https://registry.yarnpkg.com/react-native-unimodules/-/react-native-unimodules-0.5.4.tgz#d4d779576a027f0455b14d396b0e002cb57963fe"
+  integrity sha512-47ZJzZriaVtvDJp24HLu6xcKBaDScDcx71yIDmahsKKJtbEHmXl7jPz1y/2FhAKSb174m9niu3F97Di5Bo+91g==
+  dependencies:
+    "@unimodules/core" "~3.0.2"
+    "@unimodules/react-native-adapter" "~3.0.0"
+    chalk "^2.4.2"
+    expo-app-loader-provider "~6.0.0"
+    expo-asset "~6.0.0"
+    expo-constants "~6.0.0"
+    expo-file-system "~6.0.1"
+    expo-permissions "~6.0.0"
+    unimodules-barcode-scanner-interface "~3.0.0"
+    unimodules-camera-interface "~3.0.0"
+    unimodules-constants-interface "~3.0.0"
+    unimodules-face-detector-interface "~3.0.0"
+    unimodules-file-system-interface "~3.0.0"
+    unimodules-font-interface "~3.0.0"
+    unimodules-image-loader-interface "~3.0.0"
+    unimodules-permissions-interface "~3.0.0"
+    unimodules-sensors-interface "~3.0.0"
+    unimodules-task-manager-interface "~3.0.0"
 
 react-native-view-shot@2.6.0:
   version "2.6.0"
@@ -5571,9 +5600,10 @@ react-native-web@^0.11.4:
     prop-types "^15.6.0"
     react-timer-mixin "^0.13.4"
 
-"react-native@https://github.com/expo/react-native/archive/sdk-34.0.0.tar.gz":
-  version "0.59.8"
-  resolved "https://github.com/expo/react-native/archive/sdk-34.0.0.tar.gz#717c25bde6007a70e9f206ef4360999dae18e7b0"
+react-native@0.59.10:
+  version "0.59.10"
+  resolved "https://registry.yarnpkg.com/react-native/-/react-native-0.59.10.tgz#352f381e382f93a0403be499c9e384bf51c2591c"
+  integrity sha512-guB9YW+pBqS1dnfZ4ntzjINopiCUAbdmshU2wMWD1W32fRczLAopi/7Q2iHKP8LTCdxuYZV3fa9Mew5PSuANAw==
   dependencies:
     "@babel/runtime" "^7.0.0"
     "@react-native-community/cli" "^1.2.1"
@@ -5621,7 +5651,7 @@ react-native-web@^0.11.4:
     semver "^5.0.3"
     serve-static "^1.13.1"
     shell-quote "1.6.1"
-    stacktrace-parser "0.1.4"
+    stacktrace-parser "^0.1.3"
     ws "^1.1.5"
     xmldoc "^0.4.0"
     yargs "^9.0.0"
@@ -6335,10 +6365,12 @@ stack-utils@^1.0.1:
   resolved "https://registry.yarnpkg.com/stack-utils/-/stack-utils-1.0.2.tgz#33eba3897788558bebfc2db059dc158ec36cebb8"
   integrity sha512-MTX+MeG5U994cazkjd/9KNAapsHnibjMLnfXodlkXw76JEea0UiNzrqidzo1emMwk7w5Qhc9jd4Bn9TBb1MFwA==
 
-stacktrace-parser@0.1.4:
-  version "0.1.4"
-  resolved "https://registry.yarnpkg.com/stacktrace-parser/-/stacktrace-parser-0.1.4.tgz#01397922e5f62ecf30845522c95c4fe1d25e7d4e"
-  integrity sha1-ATl5IuX2Ls8whFUiyVxP4dJefU4=
+stacktrace-parser@^0.1.3:
+  version "0.1.6"
+  resolved "https://registry.yarnpkg.com/stacktrace-parser/-/stacktrace-parser-0.1.6.tgz#c17d466d15ba51bee2f753d064f17327a886ff37"
+  integrity sha512-wXhu0Z8YgCGigUtHQq+J7pjXCppk3Um5DwH4qskOKHMlJmKwuuUSm+wDAgU7t4sbVjvuDTNGwOfFKgjMEqSflA==
+  dependencies:
+    type-fest "^0.3.0"
 
 static-extend@^0.1.1:
   version "0.1.2"
@@ -6631,6 +6663,11 @@ type-check@~0.3.2:
   integrity sha1-WITKtRLPHTVeP7eE8wgEsrUg23I=
   dependencies:
     prelude-ls "~1.1.2"
+
+type-fest@^0.3.0:
+  version "0.3.1"
+  resolved "https://registry.yarnpkg.com/type-fest/-/type-fest-0.3.1.tgz#63d00d204e059474fe5e1b7c011112bbd1dc29e1"
+  integrity sha512-cUGJnCdr4STbePCgqNFbpVNCepa+kAVohJs1sLhxzdH+gnEoOd8VhbYa7pD3zZYGiURWM2xzEII3fQcRizDkYQ==
 
 typedarray@^0.0.6:
   version "0.0.6"
