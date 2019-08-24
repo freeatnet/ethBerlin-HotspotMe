@@ -1,3 +1,4 @@
+import { ethers as eth } from "ethers";
 import * as WebBrowser from 'expo-web-browser';
 import React, { Component } from 'react';
 import {
@@ -11,8 +12,9 @@ import {
   View,
 } from 'react-native';
 
+import { Currency } from "../lib/currency";
 import { MonoText } from '../components/StyledText';
-import { getChannel } from '../lib/channel';
+import { getBalance, getChannel, getSwapRate } from '../lib/channel';
 
 function getNetwork(chainId) {
   switch(chainId.toString()) {
@@ -40,24 +42,37 @@ function handleCopyPress(address) {
 export default class WalletScreen extends Component {
   state = {
     address: '',
-    balance: '0.00',
+    balance: {
+      channel: {
+        ether: Currency.ETH("0"),
+        token: Currency.DAI("0"),
+      },
+      onChain: {
+        ether: Currency.ETH("0"),
+        token: Currency.DAI("0"),
+      },
+    },
     channel: null,
-    network: '',
+    network: 'unknown',
+    swapRate: '?',
   };
 
   componentDidMount() {
+    this.refreshBalance();
     this.setupChannel();
   }
 
+  refreshBalance = async () => {
+    const balance = await getBalance();
+    const swapRate = await getSwapRate();
+    this.setState({ balance, swapRate })
+  }
+
   setupChannel = async () => {
-    console.log(`Channel so far: ${typeof channel}`)
     let { channel } = this.state;
-    console.log(`Channel so far: ${typeof channel}`)
     if (!channel) {
       channel = await getChannel();
-      // await new Promise((res, rej) => setTimeout(() => res('done'), 2000))
     }
-    console.log(`Channel now: ${typeof channel}`)
     this.setState({
       address: channel.wallet.address,
       channel,
@@ -66,7 +81,7 @@ export default class WalletScreen extends Component {
   }
 
   render() {
-    const { address, balance, channel, network } = this.state
+    const { address, balance, channel, network, swapRate } = this.state
     return (
       <View style={styles.container}>
         <ScrollView
@@ -93,8 +108,26 @@ export default class WalletScreen extends Component {
 
           <View style={styles.getStartedContainer}>
             <Text style={styles.getStartedText}>
-              Current wallet balance: ${balance}
+              Current Eth-DAI swap rate: {swapRate}
             </Text>
+          </View>
+
+          <View style={styles.getStartedContainer}>
+            <Text style={styles.getStartedText}>
+              {'\n'}Current on-chain wallet balance:{'\n'}
+              {balance.onChain.ether.format()}{'\n'}
+              {balance.onChain.token.format()}
+            </Text>
+          </View>
+
+          <View style={styles.helpContainer}>
+            <TouchableOpacity
+              onPress={() => this.refreshBalance()}
+              style={styles.helpLink}>
+              <Text style={styles.helpLinkText}>
+                Refresh Balances{'\n'}
+              </Text>
+            </TouchableOpacity>
           </View>
 
           <View style={styles.getStartedContainer}>
