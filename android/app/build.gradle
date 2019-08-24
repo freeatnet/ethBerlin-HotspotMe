@@ -104,6 +104,7 @@ android {
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
         versionName "1.0"
+        multiDexEnabled true
     }
     splits {
         abi {
@@ -143,8 +144,10 @@ dependencies {
     implementation project(':react-native-android-wifi')
     implementation project(':react-native-reanimated')
     implementation project(':react-native-gesture-handler')
+    implementation project(':react-native-google-nearby-connection')
     implementation fileTree(dir: "libs", include: ["*.jar"])
     implementation "com.android.support:appcompat-v7:${rootProject.ext.supportLibVersion}"
+    implementation 'com.google.android.gms:play-services-nearby:16+'
     implementation "com.facebook.react:react-native:+"  // From node_modules
     addUnimodulesDependencies()
 }

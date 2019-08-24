@@ -5529,6 +5529,11 @@ react-native-gesture-handler@~1.3.0:
     invariant "^2.2.2"
     prop-types "^15.5.10"
 
+react-native-google-nearby-connection@^0.0.9:
+  version "0.0.9"
+  resolved "https://registry.yarnpkg.com/react-native-google-nearby-connection/-/react-native-google-nearby-connection-0.0.9.tgz#f85b380c704cbd638a69b4846283346de5748048"
+  integrity sha512-TDkmyj4vktaLM6qcxm9MqE51ZEgoMBxeZdSmm0czFxsUlCRdWrO47kpm54oTcYtxwsW/de2eICyZHlkybgA+9w==
+
 react-native-platform-touchable@^1.1.1:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/react-native-platform-touchable/-/react-native-platform-touchable-1.1.1.tgz#fde4acc65eea585d28b164d0c3716a42129a68e4"
