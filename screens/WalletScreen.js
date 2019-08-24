@@ -1,3 +1,4 @@
+import { ethers as eth } from "ethers";
 import * as WebBrowser from 'expo-web-browser';
 import React, { Component } from 'react';
 import {
@@ -11,8 +12,10 @@ import {
   View,
 } from 'react-native';
 
+import { Currency } from "../lib/currency";
 import { MonoText } from '../components/StyledText';
-import { getChannel } from '../lib/channel';
+import { getBalance, getChannel, getSwapRate, getToken } from '../lib/channel';
+import { depositAndSwap } from '../lib/deposit';
 
 function getNetwork(chainId) {
   switch(chainId.toString()) {
@@ -37,36 +40,59 @@ function handleCopyPress(address) {
   Clipboard.setString(address);
 }
 
+const zeroBalance = {
+  channel: {
+    ether: Currency.ETH("0"),
+    token: Currency.DAI("0"),
+  },
+  onChain: {
+    ether: Currency.ETH("0"),
+    token: Currency.DAI("0"),
+  },
+}
+
 export default class WalletScreen extends Component {
   state = {
     address: '',
-    balance: '0.00',
+    balance: zeroBalance,
     channel: null,
-    network: '',
+    network: 'unknown',
+    swapRate: '?',
+    token: null,
   };
 
   componentDidMount() {
     this.setupChannel();
+    this.refreshBalance();
   }
 
   setupChannel = async () => {
-    console.log(`Channel so far: ${typeof channel}`)
-    let { channel } = this.state;
-    console.log(`Channel so far: ${typeof channel}`)
+    let { channel, token } = this.state;
     if (!channel) {
       channel = await getChannel();
-      // await new Promise((res, rej) => setTimeout(() => res('done'), 2000))
     }
-    console.log(`Channel now: ${typeof channel}`)
     this.setState({
       address: channel.wallet.address,
       channel,
       network: getNetwork(channel.opts.ethChainId),
     });
+    if (!token) {
+      token = await getToken();
+    }
+    this.setState({ token });
+  }
+
+  refreshBalance = async () => {
+    this.setState({ balance: zeroBalance })
+    const balance = await getBalance();
+    console.log(`Got updated balances`)
+    const swapRate = await getSwapRate();
+    console.log(`Got updated swapRate`)
+    this.setState({ balance, swapRate })
   }
 
   render() {
-    const { address, balance, channel, network } = this.state
+    const { address, balance, channel, network, swapRate, token } = this.state
     return (
       <View style={styles.container}>
         <ScrollView
@@ -81,20 +107,57 @@ export default class WalletScreen extends Component {
 
           <View style={styles.getStartedContainer}>
             <Text style={styles.getStartedText}>
-              Connected to eth network: {network}
-            </Text>
-          </View>
-
-          <View style={styles.getStartedContainer}>
-            <Text style={styles.getStartedText}>
               Channel ready? {channel === null ? 'nope' : 'yep'}
             </Text>
           </View>
 
           <View style={styles.getStartedContainer}>
             <Text style={styles.getStartedText}>
-              Current wallet balance: ${balance}
+              Connected to eth network: {network}
             </Text>
+          </View>
+
+          <View style={styles.getStartedContainer}>
+            <Text style={styles.getStartedText}>
+              Current Eth-DAI swap rate: {swapRate}
+            </Text>
+          </View>
+
+          <View style={styles.helpContainer}>
+            <TouchableOpacity
+              onPress={() => this.refreshBalance()}
+              style={styles.helpLink}>
+              <Text style={styles.helpLinkText}>
+                Refresh Balances{'\n'}
+              </Text>
+            </TouchableOpacity>
+          </View>
+
+          <View style={styles.getStartedContainer}>
+            <Text style={styles.getStartedText}>
+              {'\n'}Current on-chain wallet balance:{'\n'}
+              {balance.onChain.ether.format()}{'\n'}
+              {balance.onChain.token.format()}
+            </Text>
+          </View>
+
+          <View style={styles.getStartedContainer}>
+            <Text style={styles.getStartedText}>
+              {'\n'}Current in-channel wallet balance:{'\n'}
+              {balance.channel.ether.format()}{'\n'}
+              {balance.channel.token.format()}
+            </Text>
+          </View>
+
+          <View style={styles.helpContainer}>
+            <TouchableOpacity
+              onPress={() =>
+                depositAndSwap(balance, channel, swapRate, token, this.setState.bind(this))}
+              style={styles.helpLink}>
+              <Text style={styles.helpLinkText}>
+                Deposit{'\n'}
+              </Text>
+            </TouchableOpacity>
           </View>
 
           <View style={styles.getStartedContainer}>
@@ -105,7 +168,7 @@ export default class WalletScreen extends Component {
 
           <View style={styles.getStartedContainer}>
             <Text style={styles.getStartedText}>
-              Deposit address:
+              Send funds to this address to deposit:
             </Text>
           </View>
 
