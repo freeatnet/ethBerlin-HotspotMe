@@ -4,16 +4,6 @@ import { Button } from 'react-native-elements';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
 
-// const ToggleHotspotButton = () => (
-//     <Button
-//         title="Outline button"
-//         type="outline"
-//         buttonStyle={{
-//           backgroundColor: "rgba(92, 99,216, 1)"
-//         }}
-//     />
-//   );
-
 class ToggleHotspotButton extends React.Component {
     constructor(props, context) {
         super(props, context);

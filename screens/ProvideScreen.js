@@ -10,6 +10,7 @@ import {
 } from "react-native";
 
 import ToggleHotspotButton from "../components/ToggleHotspotButton";
+import SetRate from "../components/SetRate";
 
 export default class HomeScreen extends React.Component {
   state = {
@@ -17,6 +18,8 @@ export default class HomeScreen extends React.Component {
     hotspot: true,
     channel: null,
     network: "",
+    rate: "0",
+    mbsconsumed: "34.78",
   };
 
   toggleHotspot = () => {
@@ -27,8 +30,13 @@ export default class HomeScreen extends React.Component {
     }
   };
 
-  onPressDisconnectUser = () => {
-    // TODO: do something!
+  setRateFunc = (newRate) => {
+    this.setState({ rate: newRate})
+  }
+
+  updateConsumption = (mbs) => {  // to be called when ejected
+    mbsStr = str(mbs);
+    this.setState({ mbsconsumed: mbsStr });
   }
 
   render() {
@@ -44,15 +52,10 @@ export default class HomeScreen extends React.Component {
               So far, this user has consumed:
             </Text>
             <Text style={styles.consumedText}>
-              78436 kb
+               {this.state.mbsconsumed} Mbs
             </Text>
           </View>
-          <Button
-            onPress={this.onPressDisconnectUser}
-            title="Disconnect User"
-            color="#841584"
-            accessibilityLabel="Button to disconnect a user"
-          />
+          <SetRate setRateFunc={this.setRateFunc} rate={this.state.rate}/>
           <ToggleHotspotButton
             hotspot={this.state.hotspot}
             toggleHotspot={this.toggleHotspot}
