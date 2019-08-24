@@ -3,16 +3,25 @@ import {
   StyleSheet,
   View,
   Text,
-  FlatList
+  FlatList,
+  TouchableOpacity,
 } from 'react-native';
 import ConnectingStatus from '../components/ConnetingStatus';
 
+import { getChannel } from '../lib/channel';
+import { micropay } from '../lib/micropay';
 
 export default class ConnectScreen extends React.Component {
-  state = { wifiList: [] };
+  state = {
+    wifiList: [],
+    connectingToSsid: '',
+    recipient: '0xd0cfb387bb1874d12a1a1399dcb527f7b0b13efe',
+    paymentAmount: '0.01',
+  };
 
   componentDidMount = () => {
     this.loadAvailableWifiList();
+    getChannel();
   }
 
   loadAvailableWifiList = () => {
@@ -26,17 +35,40 @@ export default class ConnectScreen extends React.Component {
     });
   }
 
+  handleButtonCall = (newSsid) => {
+    this.setState({ connectingToSsid: newSsid });
+  }
+
   render = () => {
+    const { connectingToSsid, paymentAmount, recipient } = this.state;
     return (
       <View style={styles.container}>
-        <Text style={styles.titleText}>
-          List of Available Wi-Fi
-        </Text>
+
         <View style={styles.container}>
-          <FlatList
-            data={this.state.wifiList}
-            renderItem={({ item }) => <ConnectingStatus item={item} />}
-          />
+          <Text style={styles.titleText}>
+            List of Available Wi-Fi
+          </Text>
+          <View style={styles.container}>
+            <FlatList
+              data={this.state.wifiList}
+              renderItem={({ item }) => <ConnectingStatus item={item} reset={item.ssid !== connectingToSsid} handleButtonCall={this.handleButtonCall} />}
+            />
+          </View>
+        </View>
+
+        <View style={styles.container}>
+          <View style={styles.container}>
+            <Text style={styles.titleText}>
+              Recipient:{'\n'}{recipient}
+            </Text>
+            <TouchableOpacity
+              onPress={() => micropay(paymentAmount, recipient)}
+              style={styles.helpLink}>
+              <Text style={styles.linkText}>
+                {'\n'}Submit $0.01 Payment{'\n'}
+              </Text>
+            </TouchableOpacity>
+          </View>
         </View>
       </View>
     );
@@ -59,5 +91,10 @@ const styles = StyleSheet.create({
     color: 'rgba(96,100,109, 1)',
     lineHeight: 24,
     textAlign: 'center',
-  }
+  },
+  linkText: {
+    fontSize: 14,
+    color: '#2e78b7',
+    textAlign: 'center',
+  },
 });

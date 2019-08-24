@@ -10,28 +10,31 @@ import {
 export default class ConnectingStatus extends React.Component {
 
   //state object
-  state = { connecting: '' };
+  state = { connecting: false, connected: false };
 
-  componentDidMount() {
-    // Toggle the state every second
-    setInterval(() => (
-      this.setState(previousState => (
-        { connecting: previousState.connecting === '' ? 'YOyo-wifi' : '' }
-      ))
-    ), 1000);
+  componentWillReceiveProps = (nextProps) => {
+    if (nextProps.reset) {
+      this.setState({ connected: false, connecting: false });
+    }
   }
 
-  onPressConnectToNetwork = (itemSSID) => {
-    alert("item " + itemSSID + " -> " + this.state.connecting + " -> " + (itemSSID === this.state.connecting));
-    this.setState({ connecting: itemSSID});
+  onPressConnectToNetwork = () => {
+    this.props.handleButtonCall(this.props.item.ssid);
+    this.setState({ connecting: true});
+    setInterval(() => (
+      this.setState({ connecting: false, connected: true })
+    ), 1000);
     // TODO: connect!
   }
 
 
   render() {
     let networkState;
-    if (this.props.item.ssid === this.state.connecting) {
+    const { connected, connecting } = this.state;
+    if (connecting) {
       networkState = <Text>Connecting...</Text>;
+    } else if (connected) {
+      networkState = <Text>Connected</Text>;
     } else {
       networkState = <Button
         onPress={() => { this.onPressConnectToNetwork(this.props.item.ssid); }}
@@ -48,7 +51,7 @@ export default class ConnectingStatus extends React.Component {
         <View style={{ width: 50, height: 50, backgroundColor: 'powderblue' }}>
           <Text style={styles.item}>${this.props.item.price}</Text>
         </View>
-        <View style={{ width: 50, height: 50 }}>
+        <View style={{ width: 150, height: 50 }}>
           {networkState}
           {/* TODO: exchange for loading icon when connecting */}
         </View>
