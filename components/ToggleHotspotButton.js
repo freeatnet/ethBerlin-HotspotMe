@@ -19,20 +19,39 @@ class ToggleHotspotButton extends React.Component {
         super(props, context);
     }
     _handlePress() {
-    console.log('Pressed!');
+        console.log('Pressed!');
     }
+    
+
     render() {
-        return (
-            <Button
-                icon={
-                    <Icon
-                        name="wifi"
-                        size={15}
-                        color="white"
-                    />}
-                title="Hotspot"
-            />
-        );
+        if(this.props.hotspot) {
+            return (
+                <Button
+                    icon={
+                        <Icon
+                            name="wifi"
+                            size={15}
+                            color="white"
+                        />}
+                    title=" Disable Hotspot"
+                    onPress={this.props.toggleHotspot}
+                />
+            )
+        }
+        else {
+            return (
+                <Button
+                    icon={
+                        <Icon
+                            name="wifi"
+                            size={15}
+                            color="white"
+                        />}
+                    title=" Enable Hotspot"
+                    onPress={this.props.toggleHotspot}
+                />
+            );
+        }
     }
   }
 
