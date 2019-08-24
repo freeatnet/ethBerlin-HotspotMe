@@ -14,7 +14,8 @@ import {
 
 import { Currency } from "../lib/currency";
 import { MonoText } from '../components/StyledText';
-import { getBalance, getChannel, getSwapRate } from '../lib/channel';
+import { getBalance, getChannel, getSwapRate, getToken } from '../lib/channel';
+import { depositAndSwap } from '../lib/deposit';
 
 function getNetwork(chainId) {
   switch(chainId.toString()) {
@@ -39,22 +40,25 @@ function handleCopyPress(address) {
   Clipboard.setString(address);
 }
 
+const zeroBalance = {
+  channel: {
+    ether: Currency.ETH("0"),
+    token: Currency.DAI("0"),
+  },
+  onChain: {
+    ether: Currency.ETH("0"),
+    token: Currency.DAI("0"),
+  },
+}
+
 export default class WalletScreen extends Component {
   state = {
     address: '',
-    balance: {
-      channel: {
-        ether: Currency.ETH("0"),
-        token: Currency.DAI("0"),
-      },
-      onChain: {
-        ether: Currency.ETH("0"),
-        token: Currency.DAI("0"),
-      },
-    },
+    balance: zeroBalance,
     channel: null,
     network: 'unknown',
     swapRate: '?',
+    token: null,
   };
 
   componentDidMount() {
@@ -63,25 +67,33 @@ export default class WalletScreen extends Component {
   }
 
   refreshBalance = async () => {
+    this.setState({ balance: zeroBalance })
     const balance = await getBalance();
+    console.log(`Got updated balances`)
     const swapRate = await getSwapRate();
+    console.log(`Got updated swapRate`)
     this.setState({ balance, swapRate })
   }
 
   setupChannel = async () => {
-    let { channel } = this.state;
+    let { channel, token } = this.state;
     if (!channel) {
       channel = await getChannel();
     }
+    if (!token) {
+      token = await getToken();
+    }
+
     this.setState({
       address: channel.wallet.address,
       channel,
       network: getNetwork(channel.opts.ethChainId),
+      token,
     });
   }
 
   render() {
-    const { address, balance, channel, network, swapRate } = this.state
+    const { address, balance, channel, network, swapRate, token } = this.state
     return (
       <View style={styles.container}>
         <ScrollView
@@ -96,13 +108,13 @@ export default class WalletScreen extends Component {
 
           <View style={styles.getStartedContainer}>
             <Text style={styles.getStartedText}>
-              Connected to eth network: {network}
+              Channel ready? {channel === null ? 'nope' : 'yep'}
             </Text>
           </View>
 
           <View style={styles.getStartedContainer}>
             <Text style={styles.getStartedText}>
-              Channel ready? {channel === null ? 'nope' : 'yep'}
+              Connected to eth network: {network}
             </Text>
           </View>
 
@@ -110,6 +122,16 @@ export default class WalletScreen extends Component {
             <Text style={styles.getStartedText}>
               Current Eth-DAI swap rate: {swapRate}
             </Text>
+          </View>
+
+          <View style={styles.helpContainer}>
+            <TouchableOpacity
+              onPress={() => this.refreshBalance()}
+              style={styles.helpLink}>
+              <Text style={styles.helpLinkText}>
+                Refresh Balances{'\n'}
+              </Text>
+            </TouchableOpacity>
           </View>
 
           <View style={styles.getStartedContainer}>
@@ -120,12 +142,23 @@ export default class WalletScreen extends Component {
             </Text>
           </View>
 
+          <View style={styles.getStartedContainer}>
+            <Text style={styles.getStartedText}>
+              {'\n'}Current in-channel wallet balance:{'\n'}
+              {balance.channel.ether.format()}{'\n'}
+              {balance.channel.token.format()}
+            </Text>
+          </View>
+
           <View style={styles.helpContainer}>
             <TouchableOpacity
-              onPress={() => this.refreshBalance()}
+              onPress={async () => {
+                await depositAndSwap(balance, channel, swapRate, token)
+                await this.refreshBalance()
+              }}
               style={styles.helpLink}>
               <Text style={styles.helpLinkText}>
-                Refresh Balances{'\n'}
+                Deposit{'\n'}
               </Text>
             </TouchableOpacity>
           </View>
