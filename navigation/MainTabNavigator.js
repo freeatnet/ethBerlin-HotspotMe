@@ -4,6 +4,7 @@ import { createStackNavigator, createBottomTabNavigator } from 'react-navigation
 
 import TabBarIcon from '../components/TabBarIcon';
 import HomeScreen from '../screens/HomeScreen';
+import WalletScreen from '../screens/WalletScreen';
 import LinksScreen from '../screens/LinksScreen';
 import SettingsScreen from '../screens/SettingsScreen';
 
@@ -18,7 +19,6 @@ const HomeStack = createStackNavigator(
   },
   config
 );
-
 HomeStack.navigationOptions = {
   tabBarLabel: 'Home',
   tabBarIcon: ({ focused }) => (
@@ -32,7 +32,6 @@ HomeStack.navigationOptions = {
     />
   ),
 };
-
 HomeStack.path = '';
 
 const LinksStack = createStackNavigator(
@@ -41,15 +40,27 @@ const LinksStack = createStackNavigator(
   },
   config
 );
-
 LinksStack.navigationOptions = {
   tabBarLabel: 'Links',
   tabBarIcon: ({ focused }) => (
     <TabBarIcon focused={focused} name={Platform.OS === 'ios' ? 'ios-link' : 'md-link'} />
   ),
 };
-
 LinksStack.path = '';
+
+const WalletStack = createStackNavigator(
+  {
+    Wallet: WalletScreen,
+  },
+  config
+);
+WalletStack.navigationOptions = {
+  tabBarLabel: 'Wallet',
+  tabBarIcon: ({ focused }) => (
+    <TabBarIcon focused={focused} name={Platform.OS === 'ios' ? 'ios-cash' : 'md-cash'} />
+  ),
+};
+WalletStack.path = '';
 
 const SettingsStack = createStackNavigator(
   {
@@ -57,19 +68,17 @@ const SettingsStack = createStackNavigator(
   },
   config
 );
-
 SettingsStack.navigationOptions = {
   tabBarLabel: 'Settings',
   tabBarIcon: ({ focused }) => (
     <TabBarIcon focused={focused} name={Platform.OS === 'ios' ? 'ios-options' : 'md-options'} />
   ),
 };
-
 SettingsStack.path = '';
 
 const tabNavigator = createBottomTabNavigator({
+  WalletStack,
   HomeStack,
-  LinksStack,
   SettingsStack,
 });
 

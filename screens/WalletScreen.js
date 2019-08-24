@@ -75,6 +75,12 @@ export default class WalletScreen extends Component {
 
           <View style={styles.getStartedContainer}>
             <Text style={styles.getStartedText}>
+              {'\n\n'}
+            </Text>
+          </View>
+
+          <View style={styles.getStartedContainer}>
+            <Text style={styles.getStartedText}>
               Connected to eth network: {network}
             </Text>
           </View>
