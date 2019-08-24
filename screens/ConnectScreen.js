@@ -9,7 +9,7 @@ import {
 
 
 export default class ConnectScreen extends React.Component {
-  state = { wifiList: [], connecting: undefined };
+  state = { wifiList: [], connecting: '' };
 
   componentDidMount() {
     this.loadAvailableWifiList();
@@ -19,15 +19,16 @@ export default class ConnectScreen extends React.Component {
     // TODO: load list
     this.setState({
       wifiList: [
-        { ssid: 'YOyo-wifi', price: 7 },
-        { ssid: 'ple4se d0nt', price: 3 },
-        { ssid: 'hello!', price: 5 },
+        { key: 'YOyo-wifi', ssid: 'YOyo-wifi', price: 7 },
+        { key: 'ple4se d0nt', ssid: 'ple4se d0nt', price: 3 },
+        { key: 'hello!', ssid: 'hello!', price: 5 },
       ]
     });
   }
 
   onPressConnectToNetwork = (itemSSID) => {
-    this.setState({ connecting: itemSSID });
+    alert("item ", itemSSID, " -> ", this.state.connecting, itemSSID === this.state.connecting);
+    this.setState({ connecting: itemSSID});
     // TODO: connect!
   }
 
@@ -45,7 +46,7 @@ export default class ConnectScreen extends React.Component {
     }
 
     return (
-      <View key={item.ssid} style={styles.alternativeLayoutButtonContainer}>
+      <View style={styles.alternativeLayoutButtonContainer}>
         <View style={{ height: 50 }}>
           <Text style={styles.item}>{item.ssid}</Text>
         </View>
