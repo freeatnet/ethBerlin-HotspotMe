@@ -99,9 +99,9 @@ SettingsStack.navigationOptions = {
 SettingsStack.path = '';
 
 const tabNavigator = createBottomTabNavigator({
-  WalletStack,
   ConnectStack,
   ProvideStack,
+  WalletStack,
   SettingsStack,
 });
 
