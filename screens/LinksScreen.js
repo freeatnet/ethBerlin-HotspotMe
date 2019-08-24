@@ -10,7 +10,25 @@ import {
 } from "react-native";
 import Hotspot from "react-native-wifi-hotspot";
 
+import NearbyConnection, {
+  CommonStatusCodes,
+  ConnectionsStatusCodes,
+  Strategy,
+  Payload,
+  PayloadTransferUpdate
+} from "react-native-google-nearby-connection";
+
+import { startAdvertising } from "../lib/discovery/advertisement";
+
+const WALLET = "0x3591c4f43313cb1a53ff7edc7a5cc378e8ac2241";
+const RATE = 1.953125e15;
+const SSID = "AVIN-Xi";
+const WIFI_PASSWORD = "MyWifiPass";
+
 export default class App extends Component {
+  state = {
+    isAdvertising: false
+  };
   constructor(props) {
     super(props);
     this.ds = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
@@ -20,6 +38,60 @@ export default class App extends Component {
       dataSource: this.ds.cloneWithRows(peers)
     };
   }
+
+  componentDidMount() {
+    if (!this.state.isAdvertising) {
+      startAdvertising(WALLET, RATE, SSID, WIFI_PASSWORD);
+
+      this.setState({ isAdvertising: true });
+      console.log("NearbyConnection is advertising");
+
+      NearbyConnection.onReceivePayload(
+        ({
+          serviceId, // A unique identifier for the service
+          endpointId, // ID of the endpoint we got the payload from
+          payloadType, // The type of this payload (File or a Stream) [See Payload](https://developers.google.com/android/reference/com/google/android/gms/nearby/connection/Payload)
+          payloadId // Unique identifier of the payload
+        }) => {
+          console.log("NearbyConnection, server received payload like", {
+            serviceId, // A unique identifier for the service
+            endpointId, // ID of the endpoint we got the payload from
+            payloadType, // The type of this payload (File or a Stream) [See Payload](https://developers.google.com/android/reference/com/google/android/gms/nearby/connection/Payload)
+            payloadId // Unique identifier of the payload
+          });
+
+          NearbyConnection.readBytes(
+            serviceId, // A unique identifier for the service
+            endpointId, // ID of the endpoint wishing to stop playing audio from
+            payloadId // Unique identifier of the payload
+          ).then(
+            ({
+              type, // The Payload.Type represented by this payload
+              bytes, // [Payload.Type.BYTES] The bytes string that was sent
+              payloadId, // [Payload.Type.FILE or Payload.Type.STREAM] The payloadId of the payload this payload is describing
+              filename, // [Payload.Type.FILE] The name of the file being sent
+              metadata, // [Payload.Type.FILE] The metadata sent along with the file
+              streamType // [Payload.Type.STREAM] The type of stream this is [audio or video]
+            }) => {
+              console.log("NearbyConnection read bytes: ", {
+                type, // The Payload.Type represented by this payload
+                bytes, // [Payload.Type.BYTES] The bytes string that was sent
+                payloadId, // [Payload.Type.FILE or Payload.Type.STREAM] The payloadId of the payload this payload is describing
+                filename, // [Payload.Type.FILE] The name of the file being sent
+                metadata, // [Payload.Type.FILE] The metadata sent along with the file
+                streamType // [Payload.Type.STREAM] The type of stream this is [audio or video]
+              });
+            }
+          );
+        }
+      );
+    }
+  }
+
+  componentWillUnmount() {
+    NearbyConnection.stopAdvertising("com.hotspotme:wifi-provider");
+  }
+
   render() {
     return (
       <View style={styles.container}>

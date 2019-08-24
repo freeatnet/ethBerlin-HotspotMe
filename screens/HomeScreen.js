@@ -12,19 +12,29 @@ import wifi from "react-native-android-wifi";
 
 import { MonoText } from "../components/StyledText";
 
+import NearbyConnection from "react-native-google-nearby-connection";
+import { startDiscovery } from "../lib/discovery/discovery";
+
+function handleStartDiscovery(setNetworksList) {
+  startDiscovery(newDiscovery => {
+    console.log({ newDiscovery });
+    NearbyConnection.sendBytes(
+      newDiscovery.serviceId, // A unique identifier for the service
+      newDiscovery.endpointId, // ID of the endpoint wishing to stop playing audio from
+      "Hello from the other side" // A string of bytes to send
+    );
+    setNetworksList([...networksList, newDiscovery]);
+  });
+}
+
 export default function HomeScreen() {
   const [networksList, setNetworksList] = useState([]);
+  const [isDiscovering, setIsDiscovering] = useState(false);
 
   useEffect(() => {
-    // wifi.reScanAndLoadWifiList(
-    //   wifis => setNetworksList(JSON.parse(wifis)),
-    //   error =>
-    //     console.error(error) ||
-    //     wifi.loadWifiList(
-    //       wifis => setNetworksList(JSON.parse(wifis)),
-    //       error => console.error(error)
-    //     )
-    // );
+    return () => {
+      NearbyConnection.stopDiscovering("com.hotspotme:wifi-provider");
+    };
   });
 
   console.log({ networksList });
@@ -72,7 +82,7 @@ export default function HomeScreen() {
 
         <View style={styles.helpContainer}>
           <TouchableOpacity
-            onPress={handleConnectWifiPress}
+            onPress={() => handleStartDiscovery(setNetworksList)}
             style={styles.helpLink}
           >
             <Text style={styles.helpLinkText}>Connect!</Text>
