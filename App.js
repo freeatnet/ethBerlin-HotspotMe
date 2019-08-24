@@ -39,16 +39,6 @@ export default function App(props) {
 
   useEffect(() => {
     getFineLocationPermission();
-
-    wifi.reScanAndLoadWifiList(
-      wifis => console.log(JSON.parse(wifis)),
-      error =>
-        console.error(error) ||
-        wifi.loadWifiList(
-          wifis => console.log(JSON.parse(wifis)),
-          error => console.error(error)
-        )
-    );
   });
 
   // if (!isLoadingComplete && !props.skipLoadingScreen) {
