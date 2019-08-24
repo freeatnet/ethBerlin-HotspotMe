@@ -12,6 +12,7 @@ import {
 // import { Ionicons } from '@expo/vector-icons';
 import wifi from "react-native-android-wifi";
 
+import "./lib/fixtimerbug";
 import AppNavigator from "./navigation/AppNavigator";
 
 async function getFineLocationPermission() {
