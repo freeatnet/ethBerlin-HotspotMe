@@ -3,6 +3,8 @@ package com.hotspotme;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
+import reactnative.hotspot.HotspotPackage;
+import com.devstepbcn.wifi.AndroidWifiPackage;
 import com.swmansion.reanimated.ReanimatedPackage;
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
@@ -39,6 +41,8 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
+            new HotspotPackage(),
+            new AndroidWifiPackage(),
           new ReanimatedPackage(),
           new RNGestureHandlerPackage(),
           new ModuleRegistryAdapter(mModuleRegistryProvider)
