@@ -3,15 +3,15 @@ import {
   StyleSheet,
   View,
   Text,
-  FlatList,
-  Button,
+  FlatList
 } from 'react-native';
+import ConnectingStatus from '../components/ConnetingStatus';
 
 
 export default class ConnectScreen extends React.Component {
-  state = { wifiList: [], connecting: '' };
+  state = { wifiList: [] };
 
-  componentDidMount() {
+  componentDidMount = () => {
     this.loadAvailableWifiList();
   }
 
@@ -26,42 +26,7 @@ export default class ConnectScreen extends React.Component {
     });
   }
 
-  onPressConnectToNetwork = (itemSSID) => {
-    alert("item ", itemSSID, " -> ", this.state.connecting, itemSSID === this.state.connecting);
-    this.setState({ connecting: itemSSID});
-    // TODO: connect!
-  }
-
-  networkItem(item) {
-
-    let networkState;
-    if (item.ssid === this.state.connecting) {
-      networkState = <Text>Connecting...</Text>;
-    } else {
-      networkState = <Button
-        onPress={() => { this.onPressConnectToNetwork(item.ssid); }}
-        title="Connect"
-        color="#841584"
-      />
-    }
-
-    return (
-      <View style={styles.alternativeLayoutButtonContainer}>
-        <View style={{ height: 50 }}>
-          <Text style={styles.item}>{item.ssid}</Text>
-        </View>
-        <View style={{ width: 50, height: 50, backgroundColor: 'powderblue' }}>
-          <Text style={styles.item}>${item.price}</Text>
-        </View>
-        <View style={{ width: 50, height: 50 }}>
-          {networkState}
-          {/* TODO: exchange for loading icon when connecting */}
-        </View>
-      </View>
-    );
-  }
-
-  render() {
+  render = () => {
     return (
       <View style={styles.container}>
         <Text style={styles.titleText}>
@@ -70,7 +35,7 @@ export default class ConnectScreen extends React.Component {
         <View style={styles.container}>
           <FlatList
             data={this.state.wifiList}
-            renderItem={({ item }) => this.networkItem(item)}
+            renderItem={({ item }) => <ConnectingStatus item={item} />}
           />
         </View>
       </View>
@@ -94,15 +59,5 @@ const styles = StyleSheet.create({
     color: 'rgba(96,100,109, 1)',
     lineHeight: 24,
     textAlign: 'center',
-  },
-  item: {
-    padding: 10,
-    fontSize: 18,
-    height: 44,
-  },
-  alternativeLayoutButtonContainer: {
-    margin: 20,
-    flexDirection: 'row',
-    justifyContent: 'space-between'
   }
 });
