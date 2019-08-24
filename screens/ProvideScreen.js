@@ -1,75 +1,56 @@
 import React from 'react';
 import {
+  Image,
+  Switch,
   StyleSheet,
-  View,
   Text,
-  FlatList,
+  View,
   Button,
 } from 'react-native';
 
 
 export default class ProvideScreen extends React.Component {
-  state = { wifiList: [], connecting: undefined };
+  state = { switchValue: false }
 
-  componentDidMount() {
-    this.loadAvailableWifiList();
+  handlerSwitchHotspot = () => {
+    // TODO: do some!
   }
 
-  loadAvailableWifiList = () => {
-    // TODO: load list
-    this.setState({
-      wifiList: [
-        { ssid: 'YOyo-wifi', price: 7 },
-        { ssid: 'ple4se d0nt', price: 3 },
-        { ssid: 'hello!', price: 5 },
-      ]
-    });
+  onPressDisconnectUser = () => {
+    // TODO: do something!
   }
 
-  onPressConnectToNetwork = (itemSSID) => {
-    this.setState({ connecting: itemSSID });
-    // TODO: connect!
-  }
-
-  networkItem(item) {
-
-    let networkState;
-    if (item.ssid === this.state.connecting) {
-      networkState = <Text>Connecting...</Text>;
-    } else {
-      networkState = <Button
-        onPress={() => { this.onPressConnectToNetwork(item.ssid); }}
-        title="Connect"
-        color="#841584"
-      />
-    }
-
-    return (
-      <View key={item.ssid} style={styles.alternativeLayoutButtonContainer}>
-        <View style={{ height: 50 }}>
-          <Text style={styles.item}>{item.ssid}</Text>
-        </View>
-        <View style={{ width: 50, height: 50, backgroundColor: 'powderblue' }}>
-          <Text style={styles.item}>${item.price}</Text>
-        </View>
-        <View style={{ width: 50, height: 50 }}>
-          {networkState}
-          {/* TODO: exchange for loading icon when connecting */}
-        </View>
-      </View>
-    );
+  handlerSwitchHotspot = (value) => {
+    this.setState({ switchValue: value })
+    // TODO: do some.
   }
 
   render() {
     return (
       <View style={styles.container}>
-        <Text style={styles.titleText}>
-          List of Available Wi-Fi
-        </Text>
-        <View style={styles.container}>
-          <FlatList
-            data={this.state.wifiList}
-            renderItem={({ item }) => this.networkItem(item)}
+        <View style={styles.mainContainer}>
+          <Switch
+            onValueChange={this.handlerSwitchHotspot}
+            style={styles.hotspotSwitch}
+            value={this.state.switchValue}
+          />
+          <Image
+            source={require('../assets/images/robot-dev.png')}
+            style={styles.userImage}
+          />
+          <View style={styles.getStartedContainer}>
+            <Text style={styles.getStartedText}>
+              So far, this user has consumed:
+            </Text>
+            <Text style={styles.consumedText}>
+              78436 kb
+            </Text>
+          </View>
+          <Button
+            onPress={this.onPressDisconnectUser}
+            title="Disconnect User"
+            color="#841584"
+            accessibilityLabel="Button to disconnect a user"
           />
         </View>
       </View>
@@ -81,27 +62,40 @@ ProvideScreen.navigationOptions = {
   header: null,
 };
 
-
 const styles = StyleSheet.create({
+  hotspotSwitch: {
+    marginTop: 20,
+  },
   container: {
-    marginTop: 40,
     flex: 1,
     backgroundColor: '#fff',
   },
-  titleText: {
+  mainContainer: {
+    alignItems: 'center',
+    marginTop: 10,
+    marginBottom: 20,
+  },
+  userImage: {
+    width: 100,
+    height: 80,
+    resizeMode: 'contain',
+    marginTop: 3,
+    marginLeft: -10,
+  },
+  getStartedContainer: {
+    alignItems: 'center',
+    marginHorizontal: 50,
+  },
+  getStartedText: {
     fontSize: 17,
     color: 'rgba(96,100,109, 1)',
     lineHeight: 24,
     textAlign: 'center',
   },
-  item: {
-    padding: 10,
-    fontSize: 18,
-    height: 44,
+  consumedText: {
+    fontSize: 24,
+    color: 'rgba(96,100,109, 1)',
+    lineHeight: 32,
+    textAlign: 'center',
   },
-  alternativeLayoutButtonContainer: {
-    margin: 20,
-    flexDirection: 'row',
-    justifyContent: 'space-between'
-  }
 });
