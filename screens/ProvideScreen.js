@@ -7,10 +7,12 @@ import {
   Text,
   View,
   Button,
+  KeyboardAvoidingView,
 } from "react-native";
 
 import ToggleHotspotButton from "../components/ToggleHotspotButton";
 import SetRate from "../components/SetRate";
+import { whileStatement } from "@babel/types";
 
 export default class HomeScreen extends React.Component {
   state = {
@@ -18,7 +20,7 @@ export default class HomeScreen extends React.Component {
     hotspot: true,
     channel: null,
     network: "",
-    rate: "0",
+    rate: "0.25",
     mbsconsumed: "34.78",
   };
 
@@ -39,23 +41,53 @@ export default class HomeScreen extends React.Component {
     this.setState({ mbsconsumed: mbsStr });
   }
 
+  calculateTotal = () => {
+    total=int(this.state.rate)*int(this.state.mbsconsumed)
+    return str(total)
+  }
+
   render() {
     return (
-      <View style={styles.container}>
+      <View 
+      style={{
+        flex: 1, 
+        alignItems: 'center',
+        justifyContent: 'center', 
+        backgroundColor: '#269900',
+        color: "#FFFFFF",
+      }}>
         <View style={styles.mainContainer}>
-          <Image
+          {/* <Image
             source={require('../assets/images/robot-dev.png')}
             style={styles.userImage}
-          />
-          <View style={styles.getStartedContainer}>
-            <Text style={styles.getStartedText}>
+          /> */}
+          <View style={{
+            padding: 100,
+          }}>
+            <Text style={{
+              color: "#FFFFFF",
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}>
               So far, this user has consumed:
             </Text>
-            <Text style={styles.consumedText}>
-               {this.state.mbsconsumed} Mbs
+            <Text style={{
+              color: "#FFFFFF",
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}>
+               {this.state.mbsconsumed} Mbs at ${this.state.rate}/Mbs
             </Text>
+            <Text style={{
+              color: "#FFFFFF",
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}>
+               for a total of ${this.calculateTotal}
+            </Text>
+          
+            <SetRate setRateFunc={this.setRateFunc} rate={this.state.rate}/>
           </View>
-          <SetRate setRateFunc={this.setRateFunc} rate={this.state.rate}/>
           <ToggleHotspotButton
             hotspot={this.state.hotspot}
             toggleHotspot={this.toggleHotspot}
