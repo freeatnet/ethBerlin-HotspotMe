@@ -21,7 +21,7 @@ import NearbyConnection, {
 import { startAdvertising } from "../lib/discovery/advertisement";
 
 const WALLET = "0x3591c4f43313cb1a53ff7edc7a5cc378e8ac2241";
-const RATE = 1.953125e15;
+const RATE = 10;
 const SSID = "AVIN-Xi";
 const WIFI_PASSWORD = "MyWifiPass";
 
@@ -29,6 +29,7 @@ export default class App extends Component {
   state = {
     isAdvertising: false
   };
+
   constructor(props) {
     super(props);
     this.ds = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
@@ -81,6 +82,17 @@ export default class App extends Component {
                 metadata, // [Payload.Type.FILE] The metadata sent along with the file
                 streamType // [Payload.Type.STREAM] The type of stream this is [audio or video]
               });
+
+              if (bytes === `wifi pls, will pay ${WALLET}`) {
+                console.log("happy to enable wifi");
+                this.enable();
+              } else {
+                console.warn(
+                  "Received payload",
+                  bytes,
+                  "which is not the magic phrase"
+                );
+              }
             }
           );
         }
@@ -89,6 +101,7 @@ export default class App extends Component {
   }
 
   componentWillUnmount() {
+    this.disable();
     NearbyConnection.stopAdvertising("com.hotspotme:wifi-provider");
   }
 

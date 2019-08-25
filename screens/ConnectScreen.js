@@ -16,18 +16,29 @@ import { micropay } from "../lib/micropay";
 import { startDiscovery, startWifiSession } from "../lib/discovery/discovery";
 
 export default class ConnectScreen extends React.Component {
+  wifiConnectionWatcherInterval = null;
+
   state = {
     wifiList: [],
     connectingToSsid: "",
     connectionState: null,
     recipient: "0xd0cfb387bb1874d12a1a1399dcb527f7b0b13efe",
-    paymentAmount: "0.01"
+    paidAmount: 0
   };
 
   componentDidMount = () => {
     this.loadAvailableWifiList();
     getChannel();
   };
+
+  componentWillUnmount() {
+    // const { connectingToSsid, connectionState } = this.state;
+    // if (connectingToSsid != null && connectionState != null) {
+    //   wifi.isRemoveWifiNetwork(connectingToSsid, isRemoved => {
+    //     console.log("Forgetting the wifi device - " + connectingToSsid);
+    //   });
+    // }
+  }
 
   loadAvailableWifiList = () => {
     setTimeout(() => {
@@ -44,7 +55,7 @@ export default class ConnectScreen extends React.Component {
             wifiList: [endpoint, ...existingEndpointsMinusDiscovery]
           });
         } else {
-          setNetworksList({
+          this.setState({
             wifiList: existingEndpointsMinusDiscovery
           });
         }
@@ -63,28 +74,55 @@ export default class ConnectScreen extends React.Component {
       recipient: endpoint.wallet
     });
 
-    startWifiSession(endpoint.serviceId, endpoint.endpointId);
+    startWifiSession(endpoint.serviceId, endpoint.endpointId, endpoint.wallet);
+
+    const awaitConnectionAndPay = () => {
+      fetch("https://httpbin.org/get")
+        .then(async response => {
+          if (response.ok) {
+            try {
+              await micropay(endpoint.price, endpoint.wallet);
+              this.setState(function(prevState) {
+                return {
+                  ...prevState,
+                  paidAmount: prevState.paidAmount + endpoint.price
+                };
+              });
+            } catch (err) {
+              console.error("micropay failed", err);
+            }
+
+            this.setState({ connectionState: "connected" });
+          } else {
+            throw new Error("response not ok");
+          }
+        })
+        .catch(err => {
+          console.warn("link not ready", err);
+          setTimeout(awaitConnectionAndPay, 5000);
+        });
+    };
 
     setTimeout(() => {
       wifi.findAndConnect(endpoint.ssid, endpoint.wifiPassword, found => {
+        console.log("findAndConnect callback");
         if (found) {
-          setTimeout(() => {
-            micropay(endpoint.price, recipient);
-            this.setState({ connectionState: "connected" });
-          }, 10000);
+          console.warn("wifi is in range");
         } else {
-          console.log("wifi is not in range");
+          console.warn("wifi is not in range");
         }
       });
-    }, 1000);
+
+      awaitConnectionAndPay();
+    }, 5000);
   };
 
-  render = () => {
+  render() {
     const {
       connectingToSsid,
-      paymentAmount,
       recipient,
-      connectionState
+      connectionState,
+      paidAmount
     } = this.state;
 
     return (
@@ -119,14 +157,17 @@ export default class ConnectScreen extends React.Component {
         </View>
 
         <View style={styles.container}>
-          <Text style={styles.titleText}>
+          <Text>
             Recipient:{"\n"}
             {recipient}
+            {"\n"}
+            Paid amount:{"\n"}
+            {paidAmount}
           </Text>
         </View>
       </View>
     );
-  };
+  }
 }
 
 ConnectScreen.navigationOptions = {
