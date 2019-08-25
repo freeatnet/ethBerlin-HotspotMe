@@ -32,6 +32,7 @@ export default class ConnectScreen extends React.Component {
     this.loadAvailableWifiList();
     this.handleButtonCall.bind(this)
     this.getBalance()
+    this.getProviderAddress()
   }
 
   getBalance = async () => {
@@ -72,7 +73,9 @@ export default class ConnectScreen extends React.Component {
   }
 
   getProviderAddress = () => {
-    this.setState({ recipient: '0xd0cfb387bb1874d12a1a1399dcb527f7b0b13efe' })
+    const recipient = '0xd0cfb387bb1874d12a1a1399dcb527f7b0b13efe'
+    this.setState({ recipient })
+    return recipient
   }
 
   startPaymentStream = () => {
