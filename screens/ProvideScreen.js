@@ -20,7 +20,7 @@ export default class HomeScreen extends React.Component {
     hotspot: true,
     channel: null,
     network: "",
-    rate: "0.25",
+    rate: "1.25",
     mbsconsumed: "34.78",
   };
 
@@ -42,8 +42,8 @@ export default class HomeScreen extends React.Component {
   }
 
   calculateTotal = () => {
-    total=int(this.state.rate)*int(this.state.mbsconsumed)
-    return str(total)
+    total=(parseFloat(this.state.rate)*parseFloat(this.state.mbsconsumed)).toFixed(2) 
+    return total.toString()
   }
 
   render() {
@@ -53,8 +53,6 @@ export default class HomeScreen extends React.Component {
         flex: 1, 
         alignItems: 'center',
         justifyContent: 'center', 
-        backgroundColor: '#269900',
-        color: "#FFFFFF",
       }}>
         <View style={styles.mainContainer}>
           {/* <Image
@@ -65,25 +63,22 @@ export default class HomeScreen extends React.Component {
             padding: 100,
           }}>
             <Text style={{
-              color: "#FFFFFF",
               justifyContent: 'center',
               alignItems: 'center',
             }}>
               So far, this user has consumed:
             </Text>
             <Text style={{
-              color: "#FFFFFF",
               justifyContent: 'center',
               alignItems: 'center',
             }}>
-               {this.state.mbsconsumed} Mbs at ${this.state.rate}/Mbs
+               {this.state.mbsconsumed} Mbs at {this.state.rate}/Mbs
             </Text>
             <Text style={{
-              color: "#FFFFFF",
               justifyContent: 'center',
               alignItems: 'center',
             }}>
-               for a total of ${this.calculateTotal}
+               for a total of ${this.calculateTotal()}
             </Text>
           
             <SetRate setRateFunc={this.setRateFunc} rate={this.state.rate}/>

@@ -37,10 +37,10 @@ export default class ConnectingStatus extends React.Component {
       networkState = <Text>Connected</Text>;
     } else {
       networkState = <Button
-      style={{borderRadius:10, borderWidth: 1,}}
+      style={{borderRadius:10, borderWidth: 1, }}
         onPress={() => { this.onPressConnectToNetwork(this.props.item.ssid); }}
         title="Connect"
-        color="#841584"
+       
       />
     }
 
@@ -49,10 +49,10 @@ export default class ConnectingStatus extends React.Component {
         <View style={{ width: 120, height: 50 }}>
           <Text style={styles.item}>{this.props.item.ssid}</Text>
         </View>
-        <View style={{ width: 50, height: 50, backgroundColor: 'powderblue' }}>
+        <View style={{ width: 50, height: 50, }}>
           <Text style={styles.item}>${this.props.item.price}</Text>
         </View>
-        <View style={{ height: 50 }}>
+        <View style={{ height: 50,}}>
           {networkState}
           {/* TODO: exchange for loading icon when connecting */}
         </View>

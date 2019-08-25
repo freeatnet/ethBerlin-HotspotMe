@@ -26,7 +26,7 @@ class ToggleHotspotButton extends React.Component {
                     title=" Disable Hotspot"
                     onPress={this.props.toggleHotspot}
                     inputContainerStyle={{
-                        backgroundColor: '#33cc00',
+                        //backgroundColor: '#33cc00',
                     }}
                 />
             )

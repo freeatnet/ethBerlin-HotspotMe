@@ -42,7 +42,11 @@ export default class ConnectScreen extends React.Component {
   render = () => {
     const { connectingToSsid, paymentAmount, recipient } = this.state;
     return (
-      <View style={styles.container}>
+      <View style={{
+        flex: 1, 
+        alignItems: 'center',
+        justifyContent: 'center', 
+      }}>
 
         <View style={styles.container}>
           <Text style={styles.titleText}>
