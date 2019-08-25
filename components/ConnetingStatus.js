@@ -1,3 +1,4 @@
+import { ethers as eth } from "ethers";
 import React from 'react';
 import {
   Text,
@@ -6,6 +7,9 @@ import {
   Button
 } from 'react-native';
 
+import { Currency } from '../lib/currency';
+
+const { formatEther, parseEther } = eth.utils
 
 export default class ConnectingStatus extends React.Component {
 
@@ -63,13 +67,15 @@ export default class ConnectingStatus extends React.Component {
 
     return (
       <View style={styles.alternativeLayoutButtonContainer}>
-        <View style={{ width: 120, height: 50 }}>
+        <View style={{ width: 100, height: 50 }}>
           <Text style={styles.item}>{this.props.item.ssid}</Text>
         </View>
-        <View style={{ width: 50, height: 50, }}>
-          <Text style={styles.item}>${this.props.item.price}</Text>
+        <View style={{ width: 100, height: 50, }}>
+          <Text style={styles.item}>
+            {Currency.DEI(parseEther(this.props.item.price.toString())).toDAI().format()}/Mb
+          </Text>
         </View>
-        <View style={{ height: 50,}}>
+        <View style={{ height: 50 }}>
           {networkState}
           {/* TODO: exchange for loading icon when connecting */}
         </View>

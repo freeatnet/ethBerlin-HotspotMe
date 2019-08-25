@@ -11,6 +11,7 @@ const timer = require('react-native-timer');
 import ConnectingStatus from '../components/ConnetingStatus';
 
 import { toBN } from '../lib/bn';
+import { Currency } from '../lib/currency';
 import { getChannel } from '../lib/channel';
 import { micropay } from '../lib/micropay';
 
@@ -19,7 +20,7 @@ const { formatEther, parseEther } = eth.utils
 
 export default class ConnectScreen extends React.Component {
   state = {
-    balance: '?.??',
+    balance: 'loading',
     channel: null,
     connectedToSsid: '',
     paymentAmount: '0.01',
@@ -38,7 +39,7 @@ export default class ConnectScreen extends React.Component {
   getBalance = async () => {
     const channel = await getChannel()
     const tokenBalance = (await channel.getState()).persistent.channel.balanceTokenUser
-    this.setState({ balance: formatEther(tokenBalance) })
+    this.setState({ balance: Currency.DEI(tokenBalance).toDAI() })
     return tokenBalance;
   }
 
@@ -55,9 +56,9 @@ export default class ConnectScreen extends React.Component {
   // TODO: write this for real
   loadAvailableWifiList = () => {
     this.setState({ wifiList: [
-      { key: 'YOyo-wifi', ssid: 'YOyo-wifi', price: 7 },
-      { key: 'ple4se d0nt', ssid: 'ple4se d0nt', price: 3 },
-      { key: 'hello!', ssid: 'hello!', price: 5 },
+      { key: 'YOyo-wifi', ssid: 'YOyo-wifi', price: 0.12 },
+      { key: 'ple4seD0', ssid: 'ple4se d0nt', price: 0.09 },
+      { key: 'hello!', ssid: 'hello!', price: 0.11 },
     ] });
   }
 
@@ -89,6 +90,8 @@ export default class ConnectScreen extends React.Component {
         console.log(`Sending ${parseEther(paymentAmount)} to ${recipient}`)
         await micropay(paymentAmount, recipient)
         console.log(`Success! (hopefully)`)
+        this.getBalance()
+
       },
       3000,
     )
@@ -110,7 +113,7 @@ export default class ConnectScreen extends React.Component {
 
         <View style={styles.container}>
           <Text style={styles.titleText}>
-            Balance: {balance}{'\n'}
+            Balance: {balance.format ? balance.format() : balance}{'\n'}
           </Text>
           <Text style={styles.titleText}>
             List of Available Wi-Fi
@@ -131,21 +134,6 @@ export default class ConnectScreen extends React.Component {
                 }
               }}
             />
-          </View>
-        </View>
-
-        <View style={styles.container}>
-          <View style={styles.container}>
-            <Text style={styles.titleText}>
-              Recipient:{'\n'}{recipient}
-            </Text>
-            <TouchableOpacity
-              onPress={() => micropay(paymentAmount, recipient)}
-              style={styles.helpLink}>
-              <Text style={styles.linkText}>
-                {'\n'}Submit $0.01 Payment{'\n'}
-              </Text>
-            </TouchableOpacity>
           </View>
         </View>
       </View>
