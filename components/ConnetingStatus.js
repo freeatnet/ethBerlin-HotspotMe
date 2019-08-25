@@ -10,31 +10,48 @@ import {
 export default class ConnectingStatus extends React.Component {
 
   //state object
-  state = { connecting: false, connected: false };
+  state = {
+    pending: 'none',
+    connected: false,
+  };
 
   componentWillReceiveProps = (nextProps) => {
     if (nextProps.reset) {
-      this.setState({ connected: false, connecting: false });
+      this.setState({ connected: false, pending: 'none' });
     }
   }
 
-  onPressConnectToNetwork = () => {
-    this.props.handleButtonCall(this.props.item.ssid);
-    this.setState({ connecting: true});
-    setInterval(() => (
-      this.setState({ connecting: false, connected: true })
-    ), 1000);
-    // TODO: connect!
+  onPressConnectToNetwork = (ssid) => {
+    this.props.handleButtonCall(ssid);
+    if (ssid) {
+      this.setState({ pending: 'connect' });
+      setTimeout(() => (
+        // TODO: actually connect
+        this.setState({ pending: 'none', connected: true })
+      ), 1000);
+    } else {
+      this.setState({ pending: 'disconnect' });
+      setTimeout(() => (
+        // TODO: actually disconnect
+        this.setState({ pending: 'none', connected: false })
+      ), 1000);
+    }
   }
 
 
   render() {
     let networkState;
-    const { connected, connecting } = this.state;
-    if (connecting) {
+    const { connected, pending } = this.state;
+    if (pending === 'connect') {
       networkState = <Text>Connecting...</Text>;
+    } else if (pending === 'disconnect') {
+      networkState = <Text>Disconnecting...</Text>;
     } else if (connected) {
-      networkState = <Text>Connected</Text>;
+      networkState = <Button
+        onPress={() => { this.onPressConnectToNetwork(); }}
+        title="Disconnect"
+        color="#841584"
+      />
     } else {
       networkState = <Button
       style={{borderRadius:10, borderWidth: 1, }}
