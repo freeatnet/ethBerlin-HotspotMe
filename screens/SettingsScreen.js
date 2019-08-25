@@ -1,12 +1,25 @@
-import React from 'react';
-import { ExpoConfigView } from '@expo/samples';
+import React, { Component } from 'react';
+import { TextInput } from 'react-native';
 
-export default function SettingsScreen() {
-  /**
-   * Go ahead and delete ExpoConfigView and replace it with your content;
-   * we just wanted to give you a quick view of your config.
-   */
-  return <ExpoConfigView />;
+export default class SettingsScreen extends Component {
+  constructor(props) {
+    super(props);
+    this.state = { text: 'Useless Placeholder' };
+  }
+
+  handleChangePriceRate = async (text) => {
+    this.setState({text})
+  }
+
+  render() {
+    return (
+      <TextInput
+        style={{height: 40, borderColor: 'gray', borderWidth: 1}}
+        onChangeText={this.handleChangePriceRate}
+        value={this.state.text}
+      />
+    );
+  }
 }
 
 SettingsScreen.navigationOptions = {

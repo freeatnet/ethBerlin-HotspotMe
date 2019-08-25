@@ -1,3 +1,4 @@
+import { ethers as eth } from "ethers";
 import React from "react";
 import {
   ActivityIndicator,
@@ -9,37 +10,57 @@ import {
 } from "react-native";
 import wifi from "react-native-android-wifi";
 
+const timer = require("react-native-timer");
 import ConnectingStatus from "../components/ConnetingStatus";
 
+import { toBN } from "../lib/bn";
 import { getChannel } from "../lib/channel";
 import { micropay } from "../lib/micropay";
 import { startDiscovery, startWifiSession } from "../lib/discovery/discovery";
+
+const streamName = "PaymentStream";
+const { formatEther, parseEther } = eth.utils;
 
 export default class ConnectScreen extends React.Component {
   wifiConnectionWatcherInterval = null;
 
   state = {
-    wifiList: [],
-    connectingToSsid: "",
+    balance: "?.??",
+    channel: null,
+    connectedToSsid: "",
     connectionState: null,
-    recipient: "0xd0cfb387bb1874d12a1a1399dcb527f7b0b13efe",
-    paidAmount: 0
+    paymentAmount: "0.01",
+    paidAmount: 0,
+    recipient: "",
+    streaming: false,
+    wifiList: []
   };
 
   componentDidMount = () => {
     this.loadAvailableWifiList();
-    getChannel();
+    this.handleButtonCall.bind(this);
+    this.getBalance();
   };
 
-  componentWillUnmount() {
-    // const { connectingToSsid, connectionState } = this.state;
-    // if (connectingToSsid != null && connectionState != null) {
-    //   wifi.isRemoveWifiNetwork(connectingToSsid, isRemoved => {
-    //     console.log("Forgetting the wifi device - " + connectingToSsid);
-    //   });
-    // }
-  }
+  getBalance = async () => {
+    const channel = await getChannel();
+    const tokenBalance = (await channel.getState()).persistent.channel
+      .balanceTokenUser;
+    this.setState({ balance: formatEther(tokenBalance) });
+    return tokenBalance;
+  };
 
+  // TODO: write this for real
+  getProviderAddress = ssid => {
+    this.setState({ recipient: "0xd0cfb387bb1874d12a1a1399dcb527f7b0b13efe" });
+  };
+
+  // TODO: write this for real
+  getDataUsage = () => {
+    return Date.now();
+  };
+
+  // TODO: write this for real
   loadAvailableWifiList = () => {
     setTimeout(() => {
       startDiscovery(endpoint => {
@@ -88,11 +109,11 @@ export default class ConnectScreen extends React.Component {
                   paidAmount: prevState.paidAmount + endpoint.price
                 };
               });
+              this.startPaymentStream();
+              this.setState({ connectionState: "connected" });
             } catch (err) {
               console.error("micropay failed", err);
             }
-
-            this.setState({ connectionState: "connected" });
           } else {
             throw new Error("response not ok");
           }
@@ -115,6 +136,27 @@ export default class ConnectScreen extends React.Component {
 
       awaitConnectionAndPay();
     }, 5000);
+  };
+
+  startPaymentStream = () => {
+    const { paymentAmount, recipient } = this.state;
+    this.channel = getChannel();
+    console.log(`Starting payment stream`);
+    // TODO: get data usage, calculate charge
+    timer.setInterval(
+      streamName,
+      async () => {
+        console.log(`Sending ${parseEther(paymentAmount)} to ${recipient}`);
+        await micropay(paymentAmount, recipient);
+        console.log(`Success! (hopefully)`);
+      },
+      3000
+    );
+  };
+
+  stopPaymentStream = () => {
+    console.log(`Stopping payment stream`);
+    timer.clearInterval(streamName);
   };
 
   render() {
